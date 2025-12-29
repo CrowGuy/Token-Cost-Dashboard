@@ -21,6 +21,14 @@ token-cost-dashboard/
     demo_call.py
   data/
     events.jsonl
+  .env
+```
+## Create your .env
+```
+CLICKHOUSE_URL=http://localhost:8123
+CLICKHOUSE_DB=analytics
+CLICKHOUSE_USER=<account>
+CLICKHOUSE_PASSWORD=<password>
 ```
 
 ## ClickHouse + Metabase
@@ -60,10 +68,10 @@ WHERE timestamp >= now() - INTERVAL 7 DAY
 GROUP BY day
 ORDER BY day;
 ```
-Convert to Line chart
-X-axis：day
-Y-axis：cost
-Name：`Daily Cost (Last 7 Days)`
+Convert to Line chart  
+X-axis：day  
+Y-axis：cost  
+Name：`Daily Cost (Last 7 Days)`  
 
 ### Top tenants（誰在花）
 ```sql
@@ -77,10 +85,10 @@ GROUP BY tenant_id
 ORDER BY cost DESC
 LIMIT 10;
 ```
-Convert to Bar chart
-X-axis：tenant_id
-Y-axis：cost
-Name：`Top Tenants by Cost (7d)`
+Convert to Bar chart  
+X-axis：tenant_id  
+Y-axis：cost  
+Name：`Top Tenants by Cost (7d)`  
 
 ### Cost by feature（花在哪）
 ```sql
@@ -94,10 +102,10 @@ WHERE timestamp >= now() - INTERVAL 7 DAY
 GROUP BY feature
 ORDER BY cost DESC;
 ```
-Convert to Bar chart (Stacked bar)
-X-axis：feature
-Y-axis：cost
-Name：Cost by Feature
+Convert to Bar chart (Stacked bar)  
+X-axis：feature  
+Y-axis：cost  
+Name：Cost by Feature  
 
 ### Token trends：prompt vs completion（為什麼變貴）
 ```sql
@@ -112,8 +120,12 @@ GROUP BY h
 ORDER BY h;
 ```
 Convert to Line chart (Set as Multiple series)
-X-axis：hour
+X-axis：hour  
 Y-axis：
-- prompt_tokens
-- completion_tokens
+ - prompt_tokens
+ - completion_tokens  
 Name：Token Trend: Prompt vs Completion
+
+Next to do:
+✅ ClickHouse 的「每小時 rollup 表」+ 物化視圖（查詢快很多）
+✅ v1 anomaly（7 天基準 + z-score/倍數規則）+ alert webhook 範例
