@@ -39,8 +39,12 @@ docker compose up -d
 
 ## ClickHouse Event DDL
 ```bash
-curl -u admin:admin123 'http://localhost:8123/' --data-binary @ingest/01_create_db.sql
-curl -u admin:admin123 'http://localhost:8123/' --data-binary @ingest/02_create_table.sql
+source scripts/load_env.sh .env
+
+curl -u "${CLICKHOUSE_USER}:${CLICKHOUSE_PASSWORD}" "${CLICKHOUSE_URL}/" --data-binary @ingest/01_create_db.sql
+curl -u "${CLICKHOUSE_USER}:${CLICKHOUSE_PASSWORD}" "${CLICKHOUSE_URL}/" --data-binary @ingest/02_create_table.sql
+
+source scripts/unload_env.sh
 ```
 
 ## Pricing table versionlize
@@ -123,9 +127,10 @@ Convert to Line chart (Set as Multiple series)
 X-axis：hour  
 Y-axis：
  - prompt_tokens
- - completion_tokens  
+ - completion_tokens
+  
 Name：Token Trend: Prompt vs Completion
 
-Next to do:
-✅ ClickHouse 的「每小時 rollup 表」+ 物化視圖（查詢快很多）
+Next to do:  
+✅ ClickHouse 的「每小時 rollup 表」+ 物化視圖（查詢快很多）  
 ✅ v1 anomaly（7 天基準 + z-score/倍數規則）+ alert webhook 範例
