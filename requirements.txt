@@ -1,3 +1,5 @@
 requests
 pyyaml
 python-dotenv
+openai
+google-genai

@@ -8,9 +8,16 @@ prices:
     price_per_1k_prompt: 0.15
     price_per_1k_completion: 0.60
 
-  - provider: "local"
-    model: "llama-3.1-8b"
+  - provider: "vllm"
+    model: "gpt-oss-20b-local"
     region: "onprem"
+    effective_from: "2025-01-01T00:00:00Z"
+    price_per_1k_prompt: 0.00
+    price_per_1k_completion: 0.00
+
+  - provider: "gemini"
+    model: "gemini-3-flash-preview"
+    region: "global"
     effective_from: "2025-01-01T00:00:00Z"
     price_per_1k_prompt: 0.00
     price_per_1k_completion: 0.00
