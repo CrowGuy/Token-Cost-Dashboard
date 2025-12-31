@@ -23,6 +23,15 @@ token-cost-dashboard/
     events.jsonl
   .env
 ```
+
+## Environments
+- Python 3.10  
+
+Plz based on the bellow command to install libs in your python env.
+```bash
+pip install -r requirements.txt
+```
+
 ## Create your .env
 ```
 CLICKHOUSE_URL=http://localhost:8123
@@ -39,25 +48,33 @@ docker compose up -d
 
 ## ClickHouse Event DDL
 ```bash
-source scripts/load_env.sh .env
-
+set -a; source .env.clickhouse; set +a;
 curl -u "${CLICKHOUSE_USER}:${CLICKHOUSE_PASSWORD}" "${CLICKHOUSE_URL}/" --data-binary @ingest/01_create_db.sql
 curl -u "${CLICKHOUSE_USER}:${CLICKHOUSE_PASSWORD}" "${CLICKHOUSE_URL}/" --data-binary @ingest/02_create_table.sql
-
-source scripts/unload_env.sh
 ```
 
 ## Pricing table versionlize
 | 之後價格調整：只新增一筆更晚的 effective_from，不要覆寫舊的。這就是版本化的核心。
 
 ## Quick Start
+Set up the env var.
+```bash
+set -a
+source .env.llm
+source .env.app
+set +a
+```
+Just demo with fake call.
 ```bash
 python -m examples.demo_call
+```
+If you wanna demo with real call.
+```bash
+python -m examples.demo_real_call
 ```
 
 ## Import data into ClickHouse
 ```bash
-pip install requests pyyaml
 python ingest/ingest_jsonl.py
 ```
 
