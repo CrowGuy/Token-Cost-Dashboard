@@ -82,12 +82,22 @@ python ingest/ingest_jsonl.py
 ### Overview：今日/本週總成本
 ```sql
 SELECT
-  toDate(timestamp) AS day,
+  day,
   sum(computed_cost) AS cost
-FROM analytics.llm_usage_events
-WHERE timestamp >= now() - INTERVAL 7 DAY
+FROM
+(
+  SELECT
+    toDate(timestamp) AS day,
+    computed_cost
+  FROM analytics.llm_usage_events
+  WHERE timestamp >= now() - INTERVAL 7 DAY
+)
 GROUP BY day
-ORDER BY day;
+ORDER BY day
+WITH FILL
+  FROM toDate(now() - INTERVAL 6 DAY)
+  TO toDate(now())
+  STEP 1;
 ```
 Convert to Line chart  
 X-axis：day  
@@ -131,14 +141,24 @@ Name：Cost by Feature
 ### Token trends：prompt vs completion（為什麼變貴）
 ```sql
 SELECT
-  toStartOfHour(timestamp) AS h,
+  hour,
   sum(prompt_tokens) AS prompt_tokens,
-  sum(completion_tokens) AS completion_tokens,
-  sum(computed_cost) AS cost
-FROM analytics.llm_usage_events
-WHERE timestamp >= now() - INTERVAL 72 HOUR
-GROUP BY h
-ORDER BY h;
+  sum(completion_tokens) AS completion_tokens
+FROM
+(
+  SELECT
+    toStartOfHour(timestamp) AS hour,
+    prompt_tokens,
+    completion_tokens
+  FROM analytics.llm_usage_events
+  WHERE timestamp >= now() - INTERVAL 72 HOUR
+)
+GROUP BY hour
+ORDER BY hour
+WITH FILL
+  FROM toStartOfHour(now() - INTERVAL 72 HOUR)
+  TO toStartOfHour(now())
+  STEP INTERVAL 1 HOUR;
 ```
 Convert to Line chart (Set as Multiple series)
 X-axis：hour  
@@ -151,3 +171,11 @@ Name：Token Trend: Prompt vs Completion
 Next to do:  
 ✅ ClickHouse 的「每小時 rollup 表」+ 物化視圖（查詢快很多）  
 ✅ v1 anomaly（7 天基準 + z-score/倍數規則）+ alert webhook 範例
+1️⃣ Drill-down
+→ 點 feature → 看 request 細節（request_id / prompt_template_id）
+
+2️⃣ Anomaly
+→ 再加一張 query：今天 vs 過去 7 天平均
+
+3️⃣ Rollup / Materialized View
+→ dashboard 查詢快 10～100 倍

@@ -9,15 +9,15 @@ def main():
     ))
 
     # OpenAI
-    gw.chat(
-        provider="openai",
-        model="gpt-4o-mini",
-        messages=[{"role":"user","content":"Say hi in 5 words."}],
-        tenant_id="tenant_a",
-        user_id="user_1",
-        feature="chat_support",
-        endpoint="/v1/chat",
-    )
+    #gw.chat(
+    #    provider="openai",
+    #    model="gpt-4o-mini",
+    #    messages=[{"role":"user","content":"Say hi in 5 words."}],
+    #    tenant_id="tenant_a",
+    #    user_id="user_1",
+    #    feature="chat_support",
+    #    endpoint="/v1/chat",
+    #)
 
     # vLLM (OpenAI-compatible)
     gw.chat(
